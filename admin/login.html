@@ -38,6 +38,71 @@
     </div>
   </div>
 
+  <!--/bootstrap提示栏模板 -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">温馨提示</h4>
+        </div>
+        <div class="modal-body">
+          <p>One fine body&hellip;</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">确定</button>
+          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <script>
+    $(function(){
+      //登录 点击事件
+      $('.input_sub').on('click',function(e){
+        //去掉input的默认提交
+        e.preventDefault();
+
+        //获取输入的账号和密码
+        var username = $('.input_txt').val().trim()
+        var password = $('.input_pass').val().trim()
+
+        //非空判断
+        if (username == '' || password==''){
+          $('#myModal .modal-body').text('账号或密码不能为空')
+          $('#myModal').modal()
+        }
+
+        //发送请求获得账号和密码
+        $.ajax({
+          type : 'post',
+          url:'http://localhost:8080/api/v1/admin/user/login',
+          data:{
+            username:username,
+            password:password
+          },
+          success:function(backData){
+            //调用bootstrap自带的提示框的方法
+            $('#myModal .modal-body').text(backData.msg)
+            $('#myModal').modal()
+            
+            if (backData.code == 200) {
+              //bootstrap提供的有关提示框的事件用法
+              $('#myModal').on('hide.bs.modal',function(){
+                window.location.href = '../index.html'
+              })
+            }
+          }
+        })
+
+      })
+
+
+
+    })
+  </script>
+
 </body>
 
 </html>
